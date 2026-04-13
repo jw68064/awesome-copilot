@@ -3,7 +3,7 @@ title: 'Installing and Using Plugins'
 description: 'Learn how to find, install, and manage plugins that extend GitHub Copilot CLI with reusable agents, skills, hooks, and integrations.'
 authors:
   - GitHub Copilot Learning Hub Team
-lastUpdated: 2026-02-26
+lastUpdated: 2026-04-02
 estimatedReadingTime: '8 minutes'
 tags:
   - plugins
@@ -142,6 +142,23 @@ Or from a local path:
 copilot plugin marketplace add /path/to/local-marketplace
 ```
 
+### Sharing Marketplace Registrations Across a Team
+
+To automatically register an additional marketplace for everyone working in a repository, add an `extraKnownMarketplaces` entry to your `.github/copilot-settings.json` (or `config.json`):
+
+```json
+{
+  "extraKnownMarketplaces": [
+    {
+      "name": "my-org-plugins",
+      "source": "my-org/internal-plugins"
+    }
+  ]
+}
+```
+
+With this in place, team members automatically get the `my-org-plugins` marketplace available without running a separate `marketplace add` command. This replaces the older `marketplaces` setting, which was removed in v1.0.16.
+
 ## Installing Plugins
 
 ### From Copilot CLI
@@ -176,6 +193,16 @@ copilot plugin update my-plugin
 # Remove a plugin
 copilot plugin uninstall my-plugin
 ```
+
+### Loading Plugins from a Local Directory
+
+You can load plugins directly from a local directory without installing them from a marketplace, using the `--plugin-dir` flag when starting Copilot:
+
+```bash
+copilot --plugin-dir /path/to/my-plugin
+```
+
+Plugins loaded this way appear in `/plugin list` under a separate **External Plugins** section, clearly distinguished from marketplace-installed plugins. This is useful for testing local plugins in development or loading private plugins that aren't published to any marketplace.
 
 ### Where Plugins Are Stored
 
@@ -248,7 +275,7 @@ A: Yes. You can create a private plugin marketplace in an internal GitHub reposi
 
 **Q: What happens if I uninstall a plugin?**
 
-A: The plugin's agents, skills, and hooks are removed from Copilot. Any work already done with those tools is unaffected — only future sessions lose access.
+A: The plugin's agents, skills, and hooks are removed from Copilot, and any cached plugin data stored on disk is also cleaned up. Any work already done with those tools is unaffected — only future sessions lose access.
 
 ## Next Steps
 
